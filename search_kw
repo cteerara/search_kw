@@ -1,0 +1,69 @@
+#!/bin/bash
+
+########################################################
+## Search keywords in code recursively
+## This code print recursively search for files with specified extension and
+## use grep to print out lines in text files that contain the specified keyword
+##
+## To run, do:
+## ./search_kw <grep flags> ext_0 ext_1 ... keyword
+## E.g. if I want to search the the keyword `mesh` in my header and source files, I will run:
+## ./search_kw h cpp mesh
+## this will search (recursively) through all files ending with .h and .cpp and print out lines which contain the keyword `mesh`
+## I can specify any number of extensions. E.g., if I also want to search python files (.py)
+## ./search_kw h cpp py mesh
+## If I want the case to ignore case, e.g., checking for both `mesh` and `Mesh` then I can pass the appopriate grep flag before specifying the extension (`-i` in this case)
+## ./search_kw -i h cpp mesh
+########################################################
+
+# Check for any flags that will be passed to grep
+flags=()
+while [[ "$1" == -* ]]
+do
+    flags+=("$1")
+    shift
+done
+
+# Check if the user provided at least two arguments (at least one pattern and one keyword)
+if [ $# -lt 2 ]
+then
+    echo "Run: $0 pattern1 pattern2(optional) keyword"
+    exit 1
+fi
+
+# Extract the keyword (last argument)
+keyword="${!#}"
+
+results=()
+for ext in "${@:1:$#-1}"
+do
+    while IFS= read -r file;
+    do
+        results+=($file)
+    done < <(find . -type f -name "*.$ext")
+done
+
+# Define text styles
+bold=$(tput bold)
+green=$(tput setaf 2)
+normal=$(tput sgr0)
+
+# Check if any files match the patterns
+if [ "${#results[@]}" -gt 0 ]
+then
+    for file in "${results[@]}"
+    do
+        output=$(grep "${flags[@]}" --color=always -n "$keyword" "$file")
+        if [ -n "$output" ]
+        then
+            echo ""
+            echo "============================================="
+            echo "${bold}${green}${file}${normal}"
+            echo "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^"
+            echo "$output"
+            echo "============================================="
+        fi
+    done
+else
+    echo "No files found matching the given patterns."
+fi
