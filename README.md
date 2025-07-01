@@ -1,25 +1,30 @@
-# Search_kw
-This code print recursively search for files with specified extension and use grep to print out lines in text files that contain the specified keyword.
+# Recursive Keyword Search Script
 
-To run, do:
-    ```
-    ./search_kw <grep flags> ext_0 ext_1 ... keyword
-    ```
+This script recursively searches for files with specified extensions and uses `grep` to print lines in those files that contain the specified keyword.
 
-E.g. if I want to search the the keyword `mesh` in my header and source files, I will run:
-    ```
-    ./search_kw h cpp mesh
-    ```
+## Usage
+
+```bash
+./search_kw <grep_flags> ext_0 ext_1 ... keyword
+```
+
+For example, if you want to search the the keyword `mesh` in my header and source files, you will run:
+
+```bash
+./search_kw h cpp mesh
+```
 this will search (recursively) through all files ending with .h and .cpp and print out lines which contain the keyword `mesh`
 
-I can specify any number of extensions. E.g., if I also want to search python files (.py)
-    ```
-    ./search_kw h cpp py mesh
-    ```
+You can specify any number of extensions. E.g., if you also want to search python files (.py)
 
-If I want the case to ignore case, e.g., checking for both `mesh` and `Mesh` then I can pass the appopriate grep flag before specifying the extension (`-i` in this case)
-    ```
-    ./search_kw -i h cpp mesh
-    ```
+```bash
+./search_kw h cpp py mesh
+```
+
+If you want grep to ignore case—for example, to match both mesh and Mesh—you can pass the appropriate grep flag before specifying the extensions (in this case, -i).
+
+```bash
+./search_kw -i h cpp mesh
+```
 
 
